@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lost2Found</title>
+
+  <!-- Simple modern styling -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #eef2f7;
+    }
+
+    header {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #4facfe;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #00c6ff;
+    }
+
+    .post {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    .post h3 {
+      margin: 0;
+      color: #333;
+    }
+
+    .tag {
+      font-size: 12px;
+      color: white;
+      background: red;
+      padding: 3px 8px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Lost2Found</h1>
+  <p>Scan. Connect. Recover.</p>
+</header>
+
+<div class="container">
+
+  <!-- Form -->
+  <form id="lostForm">
+    <input type="text" id="item" placeholder="Item Name" required>
+    <textarea id="description" placeholder="Description" required></textarea>
+    <input type="text" id="location" placeholder="Where did you lose it?" required>
+    <input type="text" id="contact" placeholder="Your Contact" required>
+    <button type="submit">Post Lost Item</button>
+  </form>
+
+  <!-- Posts -->
+  <div id="posts"></div>
+
+</div>
+
+<script>
+  const form = document.getElementById('lostForm');
+  const postsDiv = document.getElementById('posts');
+
+  // Load saved posts
+  let posts = JSON.parse(localStorage.getItem('lostPosts')) || [];
+
+  function displayPosts() {
+    postsDiv.innerHTML = '';
+    posts.forEach((p, index) => {
+      const post = document.createElement('div');
+      post.className = 'post';
+      post.innerHTML = `
+        <span class="tag">LOST</span>
+        <h3>${p.item}</h3>
+        <p>${p.description}</p>
+        <p><strong>Location:</strong> ${p.location}</p>
+        <p><strong>Contact:</strong> ${p.contact}</p>
+      `;
+      postsDiv.appendChild(post);
+    });
+  }
+
+  displayPosts();
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const newPost = {
+      item: document.getElementById('item').value,
+      description: document.getElementById('description').value,
+      location: document.getElementById('location').value,
+      contact: document.getElementById('contact').value
+    };
+
+    posts.unshift(newPost);
+    localStorage.setItem('lostPosts', JSON.stringify(posts));
+
+    displayPosts();
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
